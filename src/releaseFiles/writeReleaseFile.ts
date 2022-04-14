@@ -4,8 +4,6 @@ import fs from "fs";
 import { AllowedFormats, ReleaseFile, ReleaseFilePaths } from "../types";
 import { getReleaseFilePath } from "./getReleaseFilePath";
 
-// TODO: set a defaultComposeFormat and defaultSetupWizardFormat similar to defaultManifestFormat
-
 /**
  * Writes a release file. Without arguments defaults to write the release file at './dappnode_package.json' | './docker-compose.yml' | './setup-wizard.yaml'
  */

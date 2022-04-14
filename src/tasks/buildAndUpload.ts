@@ -10,7 +10,8 @@ import {
   CliError,
   getImagePath,
   getLegacyImagePath,
-  releaseFilesDefaultNames
+  releaseFilesDefaultNames,
+  defaultComposeFormat
 } from "../params";
 import {
   parseComposeUpstreamVersion,
@@ -71,15 +72,15 @@ export function buildAndUpload({
   composeFileName: string;
   dir: string;
 }): ListrTask<ListrContextBuildAndPublish>[] {
+  const buildTimeout = parseTimeout(userTimeout);
+
   // Load files
   const manifest = readReleaseFile(ReleaseFileType.manifest, { dir });
   const setupWizard = readReleaseFile(ReleaseFileType.setupWizard);
 
-  const buildTimeout = parseTimeout(userTimeout);
-
   // Update compose
   const composePath = getReleaseFilePath(
-    AllowedFormats.yml,
+    defaultComposeFormat,
     ReleaseFileType.compose,
     { dir, releaseFileName: composeFileName }
   );

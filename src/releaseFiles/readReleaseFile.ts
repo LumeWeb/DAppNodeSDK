@@ -1,3 +1,4 @@
+import fs from "fs";
 import yaml from "js-yaml";
 import {
   ReleaseFilePaths,
@@ -7,8 +8,6 @@ import {
   SetupWizard,
   Compose
 } from "../types";
-import { readFile } from "../utils/file";
-import { parseFormat } from "../utils/parseFormat";
 import { findReleaseFilePath } from "./findReleaseFilePath";
 
 type ComposeOrManifestOrSetupWizard<
@@ -56,4 +55,31 @@ export function readReleaseFile<
   } catch (e) {
     throw Error(`Error parsing ${releaseFileType} : ${e.message}`);
   }
+}
+
+// Utils
+
+/**
+ * fs.readFileSync with nicer error message
+ */
+function readFile(filepath: string): string {
+  // Recommended way of checking a file existance https://nodejs.org/api/fs.html#fs_fs_exists_path_callback
+  try {
+    return fs.readFileSync(filepath, "utf8");
+  } catch (e) {
+    if (e.code === "ENOENT") {
+      throw Error(
+        `${filepath} not found. Make sure you are in a directory with an initialized DNP.`
+      );
+    } else {
+      throw e;
+    }
+  }
+}
+
+function parseFormat(filepath: string): AllowedFormats {
+  if (/.json$/.test(filepath)) return AllowedFormats.json;
+  if (/.yml$/.test(filepath)) return AllowedFormats.yml;
+  if (/.yaml$/.test(filepath)) return AllowedFormats.yaml;
+  throw Error(`Unsupported file format: ${filepath}`);
 }

@@ -35,7 +35,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: tag
     if: needs.tag.outputs.tag != ''
+
     steps:
+      - name: Filter changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            schemas:
+              - 'src/releaseFiles/schemas/**'
+
+      - if: steps.changes.outputs.schemas == 'true'
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
